@@ -5,11 +5,13 @@ public class User {
     private int id;
     private String process;
     private String type;
+    private int turno;
 
-    public User(int id, String process, String type) {
+    public User(int id, String process, String type, int turno) {
         this.id = id;
         this.process = process;
         this.type = type;
+        this.turno = turno;
     }
 
     public int getId() {
@@ -24,6 +26,10 @@ public class User {
         return type;
     }
 
+    public int getTurno() {
+        return turno;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -34,6 +40,10 @@ public class User {
 
     public void setType(String type) {
         this.type = type;
+    }
+    
+    public void setTurno(int turno) {
+        this.turno = turno;
     }
 
     @Override
