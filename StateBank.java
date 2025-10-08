@@ -14,13 +14,14 @@ public class StateBank {
         Queue General = new Queue();
         Queue Transacciones  = new Queue();
         
-        int cajeros=3, asesores=2, id, turno=0;
-        String option, tramite, usuario;
+        int cajeros=3, asesores=2, turno=0;
+        
+        String option, tramite, usuario, ced;
         String tramites[] = {"Cajero","Asesoria"};
         String usuarios[] = {"Cliente","Preferencial", "General"};
-        String menu[] = {"Asignar turno", "Pasar a taquilla", "Attend", "Statistics", "Exit"};
-        String estadisticas[] = {"Users per tramit", "Tramit made", "Total money", 
-                "Credit Mortgage value average", "Transactions per user"};
+        String menu[] = {"Asignar turno", "Pasar a taquilla", "Atender en taquilla", "Estadísticas", "Exit"};
+        String estadisticas[] = {"Usuarios por tramite", "Tramites por usuario", "Dinero total", 
+                "Valor promedio cred. hipotecario", "Transacciones por usuario"};
         
         
         do {
@@ -28,21 +29,21 @@ public class StateBank {
                     "Menu",1,null,menu, menu[0]);
             switch(option) {
                 case "Asignar turno" -> {
-                    id = Integer.parseInt(JOptionPane.showInputDialog("Ingrese cedula:"));
-                    tramite = (String)JOptionPane.showInputDialog(null,"Selected:",
-                              "Tramite",1,null,tramites, tramites[0]);
-                    usuario = (String)JOptionPane.showInputDialog(null,"Selected:",
-                              "Tramite",1,null,usuarios, usuarios[0]);
-                    User user = new User(id, tramite, usuario, turno);
+                    ced = JOptionPane.showInputDialog("Ingrese cedula:");
+                    tramite = (String)JOptionPane.showInputDialog(null,"Selecicon el tramite a realizar:",
+                              "Tramites",1,null,tramites, tramites[0]);
+                    usuario = (String)JOptionPane.showInputDialog(null,"Seleccione tipo de usuario",
+                              "Usuarios",1,null,usuarios, usuarios[0]);
+                    Usuario u = new Usuario(ced, tramite, usuario, turno);
                     switch(usuario) {
                         case "Cliente":
-                            Cliente.EnQueue(user);
+                            Cliente.EnQueue(u);
                             break;
                         case "Preferencial":
-                            Preferencial.EnQueue(user);
+                            Preferencial.EnQueue(u);
                             break;
                         case "General":
-                            General.EnQueue(user);
+                            General.EnQueue(u);
                             break;
                     }
                     turno++;
@@ -54,18 +55,20 @@ public class StateBank {
                         int c = 0;
                         int p = 0;
                         int g = 0;
-                        while(c <= 3) {
+                        while(!Cliente.isEmpty() || c <= 3) {
                             Cajero.EnQueue(Cliente.DeQueue());
                             c++;
                         }
-                        while(p <= 2) {
+                        while(!Preferencial.isEmpty() || p <= 2) {
                             Cajero.EnQueue(Preferencial.DeQueue());
                             p++;
                         }
-                        while(g <= 3) {
+                        while(!General.isEmpty() || g <= 1) {
                             Cajero.EnQueue(General.DeQueue());
                             g++;
-                        }
+                        }   
+                    }
+                    else {
                         
                     }
                 }
@@ -78,7 +81,7 @@ public class StateBank {
         String text="";
         while(!q.isEmpty())
         {
-            User u = (User)q.DeQueue();
+            Usuario u = (Usuario)q.DeQueue();
             text=text+u.toString()+"\n";
             aux.EnQueue(u);
         }
@@ -86,5 +89,17 @@ public class StateBank {
             q.EnQueue(aux.DeQueue());
         return text;
     }
-    //HOLAAAAAAAAAA
+    
+    public static int Size(Queue q) {
+        int size = 0;
+        Queue aux = new Queue();
+        while (!q.isEmpty()) {
+            aux.EnQueue(q.DeQueue());
+            size ++;
+        }
+        while (!aux.isEmpty()) {
+            q.EnQueue(aux.DeQueue());
+        }
+        return size;
+    }
 }
