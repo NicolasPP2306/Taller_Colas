@@ -14,10 +14,14 @@ public class StateBank {
         Queue General = new Queue();
         Queue Transacciones  = new Queue();
         
-        int cajeros=3, asesores=2, turno=0;
+        int cajeros=3, asesores=2, 
+            turno=0, cod_tramite=1,
+            valor_consignaciones=0, valor_retiros=0;
         
-        String option, tramite, usuario, ced;
-        String tramites[] = {"Cajero","Asesoria"};
+        String option, servicio, usuario, ced;
+        String servicios[] = {"Cajero","Asesoria"};
+        String tramites_cajero[] = {"Consignación","Retiro"};
+        String tramites_asesoria[] = {"Abrir cuenta","Solicitar credito"};
         String usuarios[] = {"Cliente","Preferencial", "General"};
         String menu[] = {"Asignar turno", "Pasar a taquilla", "Atender en taquilla", "Estadísticas", "Exit"};
         String estadisticas[] = {"Usuarios por tramite", "Tramites por usuario", "Dinero total", 
@@ -25,16 +29,16 @@ public class StateBank {
         
         
         do {
-            option = (String)JOptionPane.showInputDialog(null,"Selected:",
+            option = (String)JOptionPane.showInputDialog(null,"Seleccion una opción:",
                     "Menu",1,null,menu, menu[0]);
             switch(option) {
                 case "Asignar turno" -> {
                     ced = JOptionPane.showInputDialog("Ingrese cedula:");
-                    tramite = (String)JOptionPane.showInputDialog(null,"Selecicon el tramite a realizar:",
-                              "Tramites",1,null,tramites, tramites[0]);
+                    servicio = (String)JOptionPane.showInputDialog(null,"Seleccione el servicio a solicitar:",
+                              "servicios",1,null,servicios, servicios[0]);
                     usuario = (String)JOptionPane.showInputDialog(null,"Seleccione tipo de usuario",
                               "Usuarios",1,null,usuarios, usuarios[0]);
-                    Usuario u = new Usuario(ced, tramite, usuario, turno);
+                    Usuario u = new Usuario(ced, servicio, usuario, turno);
                     switch(usuario) {
                         case "Cliente":
                             Cliente.EnQueue(u);
@@ -49,9 +53,9 @@ public class StateBank {
                     turno++;
                 }
                 case "Pasar a taquilla" -> {
-                    tramite = (String)JOptionPane.showInputDialog(null,"Selected:",
-                              "Tramite",1,null,tramites, tramites[0]);
-                    if (tramite.equals("Cajero")){
+                    servicio = (String)JOptionPane.showInputDialog(null,"Seleccione servicio:",
+                              "Servicios",1,null,servicios, servicios[0]);
+                    if (servicio.equals("Cajero")){
                         int c = 0;
                         int p = 0;
                         int g = 0;
@@ -69,8 +73,54 @@ public class StateBank {
                         }   
                     }
                     else {
-                        
+                        while (!Cliente.isEmpty() || !Preferencial.isEmpty() || General.isEmpty()) {
+                            Cajero.EnQueue(Cliente.DeQueue());
+                            Cajero.EnQueue(Preferencial.DeQueue());
+                            Cajero.EnQueue(General.DeQueue());
+                        }
                     }
+                }
+                case "Atender en taquilla" -> {
+                    servicio = (String)JOptionPane.showInputDialog(null,"Seleccione servicio a atender",
+                               "Servicios",1,null,servicios, servicios[0]);
+                    int valor = 0;
+                    Usuario u;
+                    String tramite;
+                    if(servicio.equals("Cajero")) { 
+                        u = (Usuario)Cajero.DeQueue();
+                        tramite = (String)JOptionPane.showInputDialog(null,"Seleccione el tramite a realizar",
+                                "Tramites",1,null,tramites_cajero,tramites_cajero[0]);
+                        if(tramite.equals("Consignación")) {
+                            valor = Integer.parseInt(JOptionPane.showInputDialog("Digite valor a consignar"));
+                            valor_consignaciones += valor;
+                            JOptionPane.showMessageDialog(null, "Dinero consignado");
+                        }
+                        else {
+                            valor = Integer.parseInt(JOptionPane.showInputDialog("Digite valor a retirar"));
+                            if(valor >= valor_consignaciones) {
+                                JOptionPane.showMessageDialog(null, "Cajero con Fondos Insuficientes, vuelva despues");
+                                break;
+                            }
+                            else {
+                                valor_retiros+=valor;
+                                JOptionPane.showMessageDialog(null, "Dinero retirado");
+                            }
+                        }
+                    }
+                    else {
+                        u = (Usuario)Asesoria.DeQueue();
+                        tramite = (String)JOptionPane.showInputDialog(null,"Seleccione el tramite a realizar",
+                                "Tramites",1,null,tramites_asesoria,tramites_asesoria[0]);
+                        if(tramite.equals("Abrir cuenta")) {
+                            JOptionPane.showMessageDialog(null, "Cuenta creada");
+                        }
+                        else {
+                            valor = Integer.parseInt(JOptionPane.showInputDialog("Digite valor de credito a solicitar"));
+                            JOptionPane.showMessageDialog(null, "Credito Aprobado!");
+                        }
+                    }
+                    Tramite t = new Tramite(cod_tramite, u, tramite, valor);
+                    cod_tramite++;
                 }
             }
         }while(!option.equals("Exit"));
@@ -101,5 +151,9 @@ public class StateBank {
             q.EnQueue(aux.DeQueue());
         }
         return size;
+    }
+    
+    public static int TotalMoney(int consignaciones, int retiros) {
+        return consignaciones - retiros;
     }
 }

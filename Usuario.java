@@ -3,13 +3,13 @@ package taller_colas;
 
 public class Usuario {
     private String ced;
-    private String tramite;
+    private String servicio;
     private String tipo;
     private int turno;
 
-    public Usuario(String ced, String tramite, String tipo, int turno) {
+    public Usuario(String ced, String servicio, String tipo, int turno) {
         this.ced = ced;
-        this.tramite = tramite;
+        this.servicio = servicio;
         this.tipo = tipo;
         this.turno = turno;
     }
@@ -19,7 +19,7 @@ public class Usuario {
     }
 
     public String getTramite() {
-        return tramite;
+        return servicio;
     }
 
     public String getTipo() {
@@ -34,8 +34,8 @@ public class Usuario {
         this.ced = ced;
     }
 
-    public void setTramite(String tramite) {
-        this.tramite = tramite;
+    public void setTramite(String servicio) {
+        this.servicio = servicio;
     }
 
     public void setTipo(String tipo) {
@@ -48,6 +48,6 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "Usuario{" + "ced=" + ced + ", tramite=" + tramite + ", tipo=" + tipo + ", turno=" + turno + '}';
+        return "Usuario{" + "ced=" + ced + ", servicio=" + servicio + ", tipo=" + tipo + ", turno=" + turno + '}';
     }
 }
