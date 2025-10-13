@@ -62,23 +62,59 @@ public class StateBank {
                         int p = 0;
                         int g = 0;
                         while(!Cliente.isEmpty() || c <= 3) {
-                            Cajero.EnQueue(Cliente.DeQueue());
-                            c++;
+                            Usuario u =(Usuario)Cliente.DeQueue();
+                            if (u.getServicio().equals("Cajero")) {
+                                Cajero.EnQueue(u);
+                                c++;
+                            }
+                            else {
+                                Cliente.EnQueue(u);
+                            }
                         }
                         while(!Preferencial.isEmpty() || p <= 2) {
-                            Cajero.EnQueue(Preferencial.DeQueue());
-                            p++;
+                            Usuario u = (Usuario)Preferencial.DeQueue();
+                            if (u.getServicio().equals("Cajero")) {
+                                Cajero.EnQueue(u);
+                                p++;
+                            }
+                            else {
+                                Preferencial.EnQueue(u);
+                            }
                         }
                         while(!General.isEmpty() || g <= 1) {
-                            Cajero.EnQueue(General.DeQueue());
-                            g++;
+                            Usuario u = (Usuario)General.DeQueue();
+                            if (u.getServicio().equals("Cajero")) {
+                                Cajero.EnQueue(u);
+                                c++;
+                            }
+                            else {
+                                General.EnQueue(u);
+                            }
                         }   
                     }
                     else {
                         while(!Cliente.isEmpty() || !Preferencial.isEmpty() || !General.isEmpty()) {
-                            Asesoria.EnQueue(Cliente.DeQueue());
-                            Asesoria.EnQueue(Preferencial.DeQueue());
-                            Asesoria.EnQueue(General.DeQueue());
+                            Usuario u_c = (Usuario)Cliente.DeQueue();
+                            Usuario u_p = (Usuario)Preferencial.DeQueue();
+                            Usuario u_g = (Usuario)General.DeQueue();
+                            if (u_c.getServicio().equals("Asesoria")) {
+                                Asesoria.EnQueue(u_c);
+                            }
+                            else {
+                                Cliente.EnQueue(u_c);
+                            }
+                            if (u_p.getServicio().equals("Asesoria")) {
+                                Asesoria.EnQueue(u_p);
+                            }
+                            else {
+                                Preferencial.EnQueue(u_p);
+                            }
+                            if (u_g.getServicio().equals("Asesoria")) {
+                                Asesoria.EnQueue(u_g);
+                            }
+                            else {
+                                Cliente.EnQueue(u_g);
+                            }
                         }
                     }
                     JOptionPane.showMessageDialog(null, "Turnos organizados");
@@ -103,7 +139,7 @@ public class StateBank {
                                 valor = Integer.parseInt(JOptionPane.showInputDialog("Digite valor a retirar"));
                                 if(valor >= valor_consignaciones) {
                                     JOptionPane.showMessageDialog(null, "Cajero con Fondos Insuficientes, vuelva despues");
-                                    break;
+                                    valor = 0;
                                 }
                                 else {
                                     valor_retiros+=valor;
@@ -153,30 +189,35 @@ public class StateBank {
                         } 
                         case "Porcentaje por tramite" -> {
                             String cedula = JOptionPane.showInputDialog("Ingrese la cédula del usuario:");
-                            int total = 0;
-                            int trans_cajero = 0;
-                            int trans_asesoria = 0;
-                            Queue aux = new Queue();
-                            while (!Transacciones.isEmpty()) {
-                                Tramite t = (Tramite)Transacciones.DeQueue();
-                                if (t.getUsuario().getCed().equals(cedula)) {
-                                    if (t.getTramite().equals("Consignación") || t.getTramite().equals("Retiro")) {
-                                        trans_cajero++;
+                            if (buscarUsuario(Transacciones, cedula)) {
+                                int total = 0;
+                                int trans_cajero = 0;
+                                int trans_asesoria = 0;
+                                Queue aux = new Queue();
+                                while (!Transacciones.isEmpty()) {
+                                    Tramite t = (Tramite)Transacciones.DeQueue();
+                                    if (t.getUsuario().getCed().equals(cedula)) {
+                                        if (t.getTramite().equals("Consignación") || t.getTramite().equals("Retiro")) {
+                                            trans_cajero++;
+                                        }
+                                        else {
+                                            trans_asesoria++;
+                                        }
                                     }
-                                    else {
-                                        trans_asesoria++;
-                                    }
+                                    aux.EnQueue(t);
                                 }
-                                aux.EnQueue(t);
+                                while (!aux.isEmpty()) {
+                                    Transacciones.EnQueue(aux.DeQueue());
+                                }
+
+                                total = trans_cajero + trans_asesoria;
+                                double porc_cajero = (trans_cajero * 100)/total;
+                                JOptionPane.showMessageDialog(null, "Transacciones por usuario: \n" +
+                                        "Cajero = " + porc_cajero + "\nAsesorias = " + (100 - porc_cajero)); 
                             }
-                            while (!aux.isEmpty()) {
-                                Transacciones.EnQueue(aux.DeQueue());
+                            else {
+                                JOptionPane.showMessageDialog(null, "Usuario no encontrado");
                             }
-                            
-                            total = trans_cajero + trans_asesoria;
-                            double porc_cajero = (trans_cajero * 100)/total;
-                            JOptionPane.showMessageDialog(null, "Transacciones por usuario: \n" +
-                                    "Cajero = " + porc_cajero + "\nAsesorias = " + (100 - porc_cajero)); 
                         }
                         case "Dinero total" -> {
                             double totalBanco = valor_consignaciones - valor_retiros; 
@@ -202,19 +243,21 @@ public class StateBank {
                         }
                         case "Transacciones por usuario" -> {
                             String cedula = JOptionPane.showInputDialog("Ingrese la cédula del usuario:");
-                            int total = 0;
-                            Queue aux = new Queue();
-                            while (!Transacciones.isEmpty()) {
-                                Tramite t = (Tramite)Transacciones.DeQueue();
-                                if (t.getUsuario().getCed().equals(cedula)) {
-                                    total++;
+                            if (buscarUsuario(Transacciones, cedula)){
+                                int total = 0;
+                                Queue aux = new Queue();
+                                while (!Transacciones.isEmpty()) {
+                                    Tramite t = (Tramite)Transacciones.DeQueue();
+                                    if (t.getUsuario().getCed().equals(cedula)) {
+                                        total++;
+                                    }
+                                    aux.EnQueue(t);
                                 }
-                                aux.EnQueue(t);
+                                while (!aux.isEmpty()) {
+                                    Transacciones.EnQueue(aux.DeQueue());
+                                }
+                                JOptionPane.showMessageDialog(null, "Transacciones por usuario: \n" + total); 
                             }
-                            while (!aux.isEmpty()) {
-                                Transacciones.EnQueue(aux.DeQueue());
-                            }
-                            JOptionPane.showMessageDialog(null, "Transacciones por usuario: \n" + total); 
                         }
                     } 
                 }
@@ -249,7 +292,18 @@ public class StateBank {
         return size;
     }
     
-    public static int TotalMoney(int consignaciones, int retiros) {
-        return consignaciones - retiros;
+    public static boolean buscarUsuario(Queue q, String ced) {
+        Queue aux = new Queue();
+        while (!q.isEmpty()) {
+            Tramite t = (Tramite)q.DeQueue();
+            if(t.getUsuario().getCed().equals(ced)) {
+                return true;
+            }
+            aux.EnQueue(t);
+        }
+        while(!aux.isEmpty()) {
+            q.EnQueue(aux.DeQueue());
+        }
+        return false;
     }
 }

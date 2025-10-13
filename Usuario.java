@@ -18,7 +18,7 @@ public class Usuario {
         return ced;
     }
 
-    public String getTramite() {
+    public String getServicio() {
         return servicio;
     }
 
@@ -34,7 +34,7 @@ public class Usuario {
         this.ced = ced;
     }
 
-    public void setTramite(String servicio) {
+    public void setServicio(String servicio) {
         this.servicio = servicio;
     }
 
