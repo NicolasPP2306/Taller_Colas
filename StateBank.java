@@ -58,57 +58,64 @@ public class StateBank {
                     servicio = (String)JOptionPane.showInputDialog(null,"Seleccione servicio:",
                               "Servicios",1,null,servicios, servicios[0]);
                     if (servicio.equals("Cajero")){
-                        int c = 0;
-                        int p = 0;
-                        int g = 0;
-                        while(!Cliente.isEmpty() || c <= 3) {
-                            Usuario u =(Usuario)Cliente.DeQueue();
-                            if (u.getServicio().equals("Cajero")) {
-                                Cajero.EnQueue(u);
-                                c++;
+                        while (!Cliente.isEmpty() || !Preferencial.isEmpty() || !General.isEmpty()) {
+                            int c = 0;
+                            int p = 0;
+                            int g = 0;
+                            Usuario u;
+                            while(!Cliente.isEmpty() && c <= 3) {
+                                u = (Usuario) Cliente.DeQueue();
+                                if (u.getServicio().equals("Cajero")) {
+                                    Cajero.EnQueue(u);
+                                    c++;
+                                }
+                                else {
+                                    Cliente.EnQueue(u);
+                                }
+
                             }
-                            else {
-                                Cliente.EnQueue(u);
+                            while(!Preferencial.isEmpty() && p <= 2) {
+                                u = (Usuario)Preferencial.DeQueue();
+                                if (u.getServicio().equals("Cajero")) {
+                                    Cajero.EnQueue(u);
+                                    p++;
+                                }
+                                else {
+                                    Preferencial.EnQueue(u);
+                                }
                             }
+                            while(!General.isEmpty() && g <= 1) {
+                                u = (Usuario)General.DeQueue();
+                                if (u.getServicio().equals("Cajero")) {
+                                    Cajero.EnQueue(u);
+                                    g++;
+                                }
+                                else {
+                                    General.EnQueue(u);
+                                }
+                            } 
                         }
-                        while(!Preferencial.isEmpty() || p <= 2) {
-                            Usuario u = (Usuario)Preferencial.DeQueue();
-                            if (u.getServicio().equals("Cajero")) {
-                                Cajero.EnQueue(u);
-                                p++;
-                            }
-                            else {
-                                Preferencial.EnQueue(u);
-                            }
-                        }
-                        while(!General.isEmpty() || g <= 1) {
-                            Usuario u = (Usuario)General.DeQueue();
-                            if (u.getServicio().equals("Cajero")) {
-                                Cajero.EnQueue(u);
-                                c++;
-                            }
-                            else {
-                                General.EnQueue(u);
-                            }
-                        }   
                     }
                     else {
                         while(!Cliente.isEmpty() || !Preferencial.isEmpty() || !General.isEmpty()) {
+                            
                             Usuario u_c = (Usuario)Cliente.DeQueue();
-                            Usuario u_p = (Usuario)Preferencial.DeQueue();
-                            Usuario u_g = (Usuario)General.DeQueue();
                             if (u_c.getServicio().equals("Asesoria")) {
                                 Asesoria.EnQueue(u_c);
                             }
                             else {
                                 Cliente.EnQueue(u_c);
                             }
+                            
+                            Usuario u_p = (Usuario)Preferencial.DeQueue();
                             if (u_p.getServicio().equals("Asesoria")) {
                                 Asesoria.EnQueue(u_p);
                             }
                             else {
                                 Preferencial.EnQueue(u_p);
                             }
+                            
+                            Usuario u_g = (Usuario)General.DeQueue();
                             if (u_g.getServicio().equals("Asesoria")) {
                                 Asesoria.EnQueue(u_g);
                             }
