@@ -33,7 +33,7 @@ public class StateBank {
             option = (String)JOptionPane.showInputDialog(null,"Seleccion una opción:",
                     "Menu",1,null,menu, menu[0]);
             switch(option) {
-                case "Asignar turno" -> {
+                case "Asignar turno":
                     ced = JOptionPane.showInputDialog("Ingrese cedula:");
                     servicio = (String)JOptionPane.showInputDialog(null,"Seleccione el servicio a solicitar:",
                               "servicios",1,null,servicios, servicios[0]);
@@ -53,8 +53,8 @@ public class StateBank {
                     }
                     JOptionPane.showMessageDialog(null, "Turno asignado! \nTurno #" + turno);
                     turno++;
-                }
-                case "Pasar a taquilla" -> {
+                break;
+                case "Pasar a taquilla":
                     servicio = (String)JOptionPane.showInputDialog(null,"Seleccione servicio:",
                               "Servicios",1,null,servicios, servicios[0]);
                     if (servicio.equals("Cajero")){
@@ -62,7 +62,6 @@ public class StateBank {
                             int c = 0;
                             int p = 0;
                             int g = 0;
-                            Usuario u;
                             while(!Cliente.isEmpty() && c <= 3) {
                                 u = (Usuario) Cliente.DeQueue();
                                 if (u.getServicio().equals("Cajero")) {
@@ -99,38 +98,37 @@ public class StateBank {
                     else {
                         while(!Cliente.isEmpty() || !Preferencial.isEmpty() || !General.isEmpty()) {
                             
-                            Usuario u_c = (Usuario)Cliente.DeQueue();
-                            if (u_c.getServicio().equals("Asesoria")) {
-                                Asesoria.EnQueue(u_c);
+                            u= (Usuario)Cliente.DeQueue();
+                            if (u.getServicio().equals("Asesoria")) {
+                                Asesoria.EnQueue(u);
                             }
                             else {
-                                Cliente.EnQueue(u_c);
+                                Cliente.EnQueue(u);
                             }
                             
-                            Usuario u_p = (Usuario)Preferencial.DeQueue();
-                            if (u_p.getServicio().equals("Asesoria")) {
-                                Asesoria.EnQueue(u_p);
+                            u = (Usuario)Preferencial.DeQueue();
+                            if (u.getServicio().equals("Asesoria")) {
+                                Asesoria.EnQueue(u);
                             }
                             else {
-                                Preferencial.EnQueue(u_p);
+                                Preferencial.EnQueue(u);
                             }
                             
-                            Usuario u_g = (Usuario)General.DeQueue();
-                            if (u_g.getServicio().equals("Asesoria")) {
-                                Asesoria.EnQueue(u_g);
+                            u = (Usuario)General.DeQueue();
+                            if (u.getServicio().equals("Asesoria")) {
+                                Asesoria.EnQueue(u);
                             }
                             else {
-                                Cliente.EnQueue(u_g);
+                                Cliente.EnQueue(u);
                             }
                         }
                     }
                     JOptionPane.showMessageDialog(null, "Turnos organizados");
-                }
-                case "Atender en taquilla" -> {
+                break;
+                case "Atender en taquilla":
                     servicio = (String)JOptionPane.showInputDialog(null,"Seleccione servicio a atender",
                            "Servicios",1,null,servicios, servicios[0]);
                     int valor = 0;
-                    Usuario u;
                     String tramite;
                     if(servicio.equals("Cajero")) { 
                         if (!Cajero.isEmpty()) {
@@ -180,12 +178,12 @@ public class StateBank {
                     Tramite t = new Tramite(cod_tramite, u, tramite, valor);
                     Transacciones.EnQueue(t);
                     cod_tramite++;
-                }
-                case "Estadísticas" -> { 
+                break;
+                case "Estadísticas":
                     String estadistica = (String)JOptionPane.showInputDialog(null,"Seleccione una opción:", 
                             "estadisticas",1,null,estadisticas, estadisticas[0]); 
                     switch (estadistica){ 
-                        case "Usuarios por tramite"-> { 
+                        case "Usuarios por tramite":
                             servicio = (String)JOptionPane.showInputDialog(null,"Seleccione servicio:",
                                 "Servicios",1,null,servicios, servicios[0]); 
                             if(servicio.equals("Cajero")){ 
@@ -193,8 +191,8 @@ public class StateBank {
                             }
                             else{ JOptionPane.showMessageDialog(null, "Cantidad usuarios en asesoría: " + Size(Asesoria) ); 
                             } 
-                        } 
-                        case "Porcentaje por tramite" -> {
+                        break; 
+                        case "Porcentaje por tramite":
                             String cedula = JOptionPane.showInputDialog("Ingrese la cédula del usuario:");
                             if (buscarUsuario(Transacciones, cedula)) {
                                 int total = 0;
@@ -202,7 +200,7 @@ public class StateBank {
                                 int trans_asesoria = 0;
                                 Queue aux = new Queue();
                                 while (!Transacciones.isEmpty()) {
-                                    Tramite t = (Tramite)Transacciones.DeQueue();
+                                    t = (Tramite)Transacciones.DeQueue();
                                     if (t.getUsuario().getCed().equals(cedula)) {
                                         if (t.getTramite().equals("Consignación") || t.getTramite().equals("Retiro")) {
                                             trans_cajero++;
@@ -225,17 +223,17 @@ public class StateBank {
                             else {
                                 JOptionPane.showMessageDialog(null, "Usuario no encontrado");
                             }
-                        }
-                        case "Dinero total" -> {
+                        break;
+                        case "Dinero total":
                             double totalBanco = valor_consignaciones - valor_retiros; 
                             JOptionPane.showMessageDialog(null, "Total de dinero en el banco: " + totalBanco); 
-                        } 
-                        case "Valor promedio cred. hipotecario" -> {
+                        break;
+                        case "Valor promedio cred. hipotecario":
                             Queue aux = new Queue();
                             int cant_creditos = 0;
                             int total_creditos = 0;
                             while (!Transacciones.isEmpty()) {
-                                Tramite t = (Tramite)Transacciones.DeQueue();
+                                t = (Tramite)Transacciones.DeQueue();
                                 if (t.getTramite().equals("Solicitar credito")) {
                                     total_creditos += t.getValor();
                                     cant_creditos++;
@@ -247,14 +245,14 @@ public class StateBank {
                             }
                             JOptionPane.showMessageDialog(null, "Valor promedio de creditos = " + 
                                     (total_creditos/cant_creditos));
-                        }
-                        case "Transacciones por usuario" -> {
-                            String cedula = JOptionPane.showInputDialog("Ingrese la cédula del usuario:");
+                        break;
+                        case "Transacciones por usuario":
+                            cedula = JOptionPane.showInputDialog("Ingrese la cédula del usuario:");
                             if (buscarUsuario(Transacciones, cedula)){
                                 int total = 0;
-                                Queue aux = new Queue();
+                                aux = new Queue();
                                 while (!Transacciones.isEmpty()) {
-                                    Tramite t = (Tramite)Transacciones.DeQueue();
+                                    t = (Tramite)Transacciones.DeQueue();
                                     if (t.getUsuario().getCed().equals(cedula)) {
                                         total++;
                                     }
@@ -265,9 +263,9 @@ public class StateBank {
                                 }
                                 JOptionPane.showMessageDialog(null, "Transacciones por usuario: \n" + total); 
                             }
-                        }
+                        break;
                     } 
-                }
+                break;
             }
         }while(!option.equals("Exit"));
     }
