@@ -14,8 +14,8 @@ public class BancoEstatal {
         
         Queue transacciones = new Queue();
         
-        String cedula, servicio, tipo_usuario;
-        int turno_cliente = 1, turno_preferencial= 1, turno_general = 1, cod_tramite = 1;
+        String servicio, tipo_usuario;
+        int cedula,turno_cliente = 1, turno_preferencial= 1, turno_general = 1, cod_tramite = 1;
         
         String option;
         int valor_consignaciones = 0, valor_retiros = 0;
@@ -33,7 +33,7 @@ public class BancoEstatal {
                     "Menu principal",1,null, menu_principal,menu_principal[0]);
             switch(option) {
                 case "Asignar turno":
-                    cedula = JOptionPane.showInputDialog("Digite la cedula");
+                    cedula = Integer.parseInt(JOptionPane.showInputDialog("Digite la cedula"));
                     servicio = (String)JOptionPane.showInputDialog(null,"Servicio a solicitar",
                             "Servicios",1,null,servicios,servicios[0]);
                     tipo_usuario = (String)JOptionPane.showInputDialog(null,"Tipo de usuario",
@@ -103,12 +103,14 @@ public class BancoEstatal {
                                     valor = 0;
                                 }
                                 else {
+                                    valor_retiros += valor;
                                     JOptionPane.showMessageDialog(null, "Retiro exitoso");
                                 }
                             }
                         }
                         else {
                             JOptionPane.showMessageDialog(null, "Turnos pendientes por pasar a taquilla");
+                            break;
                         }
                     }
                     else {
@@ -127,6 +129,7 @@ public class BancoEstatal {
                         }
                         else {
                             JOptionPane.showMessageDialog(null, "Turnos pendientes por pasar a taquilla");
+                            break;
                         }
                     }
                     Tramite t = new Tramite(cod_tramite, u, tramite, valor);
@@ -145,7 +148,7 @@ public class BancoEstatal {
                                         "\nCajero = " + Size(cajero) + " En espera \nAsesoria = " + Size(asesoria) + " En espera");
                                 break;
                             case "Tramites por usuario":
-                                cedula = JOptionPane.showInputDialog("Ingrese la cédula del usuario:");
+                                cedula = Integer.parseInt(JOptionPane.showInputDialog("Digite la cedula"));
                                 if (buscarUsuario(transacciones, cedula)) {
                                     float porc_cajero = PorcentajePorTramite(transacciones, cedula);
                                     JOptionPane.showMessageDialog(null, "TRAMITES POR USUARIO" +
@@ -167,7 +170,7 @@ public class BancoEstatal {
                                 break;
                             
                             case "Transacciones por persona":
-                                cedula = JOptionPane.showInputDialog("Ingrese la cedula del usuario:");
+                                cedula = Integer.parseInt(JOptionPane.showInputDialog("Digite la cedula"));
                                 if(buscarUsuario(transacciones, cedula)) {
                                     JOptionPane.showMessageDialog(null, "CANT. TRAMITES\n" + TransaccionesXPersona(transacciones, cedula));
                                 }
@@ -205,13 +208,13 @@ public class BancoEstatal {
     {
         Queue aux = new Queue();
         int count=0;
-        while(!q.IsEmpty())
-        {
+        while(!q.IsEmpty()) {
             aux.EnQueue(q.DeQueue());
             count++;
         }
-        while(!aux.IsEmpty())
+        while(!aux.IsEmpty()) {
             q.EnQueue(aux.DeQueue());
+        }
         return count;
     }
     
@@ -233,27 +236,28 @@ public class BancoEstatal {
         }
     }
     
-    public static boolean buscarUsuario(Queue q, String cedula) {
+    public static boolean buscarUsuario(Queue q, int cedula) {
         Queue aux = new Queue();
+        boolean encontrado = false;
         while (!q.IsEmpty()) {
             Tramite t = (Tramite)q.DeQueue();
-            if(t.getUsuario().getCedula().equals(cedula)) {
-                return true;
+            if(t.getUsuario().getCedula()==cedula) {
+                encontrado = true;
             }
             aux.EnQueue(t);
         }
         while(!aux.IsEmpty()) {
             q.EnQueue(aux.DeQueue());
         }
-        return false;
+        return encontrado;
     }
-    public static float PorcentajePorTramite(Queue transacciones, String cedula) {
+    public static float PorcentajePorTramite(Queue transacciones, int cedula) {
         Queue aux = new Queue();
         int cant_cajero = 0;
         int total = 0;
         while(!transacciones.IsEmpty()) {
             Tramite t = (Tramite)transacciones.DeQueue();
-            if(t.getUsuario().getCedula().equals(cedula)) {
+            if(t.getUsuario().getCedula()==cedula) {
                 total++;
                 if(t.getUsuario().getServicio().equals("Cajero")) {
                     cant_cajero++;
@@ -291,15 +295,15 @@ public class BancoEstatal {
         return monto_creditos/cant_creditos;
     }
     
-    public static int TransaccionesXPersona(Queue transacciones, String cedula) {
+    public static int TransaccionesXPersona(Queue transacciones, int cedula) {
         Queue aux = new Queue();
         int contador = 0;
         while(!transacciones.IsEmpty()){
             Tramite t = (Tramite)transacciones.DeQueue();
-            aux.EnQueue(t);
-            if(t.getUsuario().getCedula().equals(cedula)) {
+            if(t.getUsuario().getCedula()==cedula) {
                 contador++;
             }
+            aux.EnQueue(t);
         }
         while(!aux.IsEmpty()) {
             transacciones.EnQueue(aux.DeQueue());
