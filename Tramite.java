@@ -1,16 +1,15 @@
-
 package taller_colas;
 
 public class Tramite {
     private int codigo;
     private Usuario usuario;
-    private String tramite;
+    private String tipo_tramite;
     private int valor;
 
-    public Tramite(int codigo, Usuario usuario, String tramite, int valor) {
+    public Tramite(int codigo, Usuario usuario, String tipo_tramite, int valor) {
         this.codigo = codigo;
         this.usuario = usuario;
-        this.tramite = tramite;
+        this.tipo_tramite = tipo_tramite;
         this.valor = valor;
     }
 
@@ -22,8 +21,8 @@ public class Tramite {
         return usuario;
     }
 
-    public String getTramite() {
-        return tramite;
+    public String getTipo_tramite() {
+        return tipo_tramite;
     }
 
     public int getValor() {
@@ -38,8 +37,8 @@ public class Tramite {
         this.usuario = usuario;
     }
 
-    public void setTramite(String tramite) {
-        this.tramite = tramite;
+    public void setTipo_tramite(String tipo_tramite) {
+        this.tipo_tramite = tipo_tramite;
     }
 
     public void setValor(int valor) {
@@ -48,6 +47,6 @@ public class Tramite {
 
     @Override
     public String toString() {
-        return "Tramite{" + "codigo=" + codigo + ", usuario=" + usuario + ", tramite=" + tramite + ", valor=" + valor + '}';
+        return "Tramite{" + "codigo=" + codigo + ", usuario=" + usuario + ", tipo_tramite=" + tipo_tramite + ", valor=" + valor + '}';
     }
 }

@@ -1,45 +1,44 @@
-
 package taller_colas;
 
 public class Usuario {
-    private String ced;
+    private String cedula;
     private String servicio;
-    private String tipo;
+    private String tipo_usuario;
     private int turno;
 
-    public Usuario(String ced, String servicio, String tipo, int turno) {
-        this.ced = ced;
+    public Usuario(String cedula, String servicio, String tipo_usuario, int turno) {
+        this.cedula = cedula;
         this.servicio = servicio;
-        this.tipo = tipo;
+        this.tipo_usuario = tipo_usuario;
         this.turno = turno;
     }
 
-    public String getCed() {
-        return ced;
+    public String getCedula() {
+        return cedula;
     }
 
     public String getServicio() {
         return servicio;
     }
 
-    public String getTipo() {
-        return tipo;
+    public String getTipo_usuario() {
+        return tipo_usuario;
     }
 
     public int getTurno() {
         return turno;
     }
 
-    public void setCed(String ced) {
-        this.ced = ced;
+    public void setCedula(String cedula) {
+        this.cedula = cedula;
     }
 
     public void setServicio(String servicio) {
         this.servicio = servicio;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setTipo_usuario(String tipo_usuario) {
+        this.tipo_usuario = tipo_usuario;
     }
 
     public void setTurno(int turno) {
@@ -48,6 +47,6 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "Usuario{" + "ced=" + ced + ", servicio=" + servicio + ", tipo=" + tipo + ", turno=" + turno + '}';
+        return "Usuario{" + "cedula=" + cedula + ", servicio=" + servicio + ", tipo_usuario=" + tipo_usuario + ", turno=" + turno + '}';
     }
 }

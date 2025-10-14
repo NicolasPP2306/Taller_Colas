@@ -1,4 +1,3 @@
-
 package taller_colas;
 
 public class Queue {
@@ -7,33 +6,37 @@ public class Queue {
 
     public Queue() {
     }
-
-    public boolean isEmpty() {
-        return first == null && last == null;
+    
+    public boolean IsEmpty() {
+        return first == null && last==null;
     }
     
     public void EnQueue(Object data) {
-        if (isEmpty()) {
+        if(IsEmpty()) {
             first = new Node(data);
             last = first;
-        } 
-        else  {
-           Node n = new Node(data); 
-           last.setLink(n);
-           last = n;
+        }
+        else {
+            Node n = new Node(data);
+            last.setLink(n);
+            last = n;
         }
     }
     
     public Object DeQueue() {
         Object data = null;
-        if (!isEmpty()) {
+        if(!IsEmpty()) {
             data = first.getData();
             first = first.getLink();
             if(first == null) {
                 last = first;
             }
-            return data;
         }
         return data;
     }
+
+    public Node getFirst() {
+        return first;
+    }
+    
 }
