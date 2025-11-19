@@ -3,6 +3,11 @@ package taller_colas;
 import javax.swing.JOptionPane;
 
 public class BancoEstatal {
+    
+    /*Integrantes:
+        - Nicolás Peña
+        - Andrés Zapata
+        - Santiago Acosta*/
 
     public static void main(String[] args) {
         Queue cajero = new Queue();
